@@ -20,4 +20,13 @@ class ChatController extends Controller
         ]);
         return redirect()->route('home');
     }
+    public function destroy(Message $message){
+        if(auth()->user()->is_admin||auth()->id() == $message->user_id){
+            $message->delete();
+            return redirect()->route('home');
+        }
+        else{
+            return redirect()->route('home')->with('error','У вас нет прав для удаления этого комментария');
+        }
+    }
 }

@@ -26,5 +26,6 @@ Route::group(['middleware'=>'guest'], function(){
 Route::group(['middleware'=>'auth'], function(){
     Route::get('/logout',[AuthController::class,'logout'])->name('logout');
     Route::post('/chat', [ChatController::class, 'store'])->name('chat.store');
+    Route::delete('/delete/{message}',[ChatController::class,'destroy'])->name('message.destroy');
 });
 
