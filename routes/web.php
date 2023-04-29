@@ -28,4 +28,9 @@ Route::group(['middleware'=>'auth'], function(){
     Route::post('/chat', [ChatController::class, 'store'])->name('chat.store');
     Route::delete('/delete/{message}',[ChatController::class,'destroy'])->name('message.destroy');
 });
-
+Route::group(['middleware'=>'admin'], function(){
+   Route::post('/user/{user}/block',[ChatController::class,'block'])->name('user.block');
+   Route::post('/user/{user}/unblock',[ChatController::class,'unblock'])->name('user.unblock');
+   Route::post('/user/{user}/mute',[ChatController::class,'mute'])->name('user.mute');
+   Route::post('/user/{user}/unmute',[ChatController::class,'unmute'])->name('user.unmute');
+});

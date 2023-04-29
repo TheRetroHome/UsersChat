@@ -15,15 +15,34 @@
                     <div>
                         @candelete($message)
                         <form action="{{ route('message.destroy', $message) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-danger btn-sm mr-1">Удалить</button>
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm mr-1">Удалить</button>
                         </form>
                         @endcandelete
                         @admin
-                        <button class="btn btn-danger btn-sm mr-1">Заблокировать</button>
-                        <button class="btn btn-success btn-sm mr-1">Разблокировать</button>
-                        <button class="btn btn-warning btn-sm mr-1">Мут</button>
+                        @if($message->user->is_blocked && !$message->user->is_admin)
+                        <form action="{{ route('user.unblock', $message->user) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button class="btn btn-success btn-sm mr-1">Разблокировать</button>
+                        </form>
+                        @elseif(!$message->user->is_blocked && !$message->user->is_admin)
+                         <form action="{{ route('user.block', $message->user) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button class="btn btn-danger btn-sm mr-1">Заблокировать</button>
+                         </form>
+                         @endif
+                        @if(!$message->user->is_admin && !$message->user->mute_until)
+                         <form action="{{ route('user.mute', $message->user) }}" method="POST" class="d-inline">
+                             @csrf
+                            <button class="btn btn-warning btn-sm mr-1">Мут</button>
+                        </form>
+                        @elseif(!$message->user->is_admin && $message->user->mute_until)
+                          <form action="{{ route('user.unmute', $message->user) }}" method="POST" class="d-inline">
+                              @csrf
+                             <button class="btn btn-warning btn-sm mr-1">Размутить</button>
+                         </form>
+                        @endif
                         @endadmin
                         <span class="text-muted" style="font-size: 0.8em;">{{ $message->created_at->format('H:i:s') }}</span>
                     </div>
@@ -32,6 +51,13 @@
         @endforeach
             </div>
             @auth
+            @if(auth()->user()->is_blocked || auth()->user()->mute_until)
+                <div class="card-footer">
+                  <div class="text-center">
+                     <span>Вы заблокированы или замучены, чат вам недоступен</span>
+                 </div>
+               </div>
+             @else
             <div class="card-footer">
                 <form action="{{route('chat.store')}}" method="POST">
                 @csrf
@@ -41,6 +67,7 @@
                     </div>
                 </form>
             </div>
+            @endif
             @endauth
             @guest
             <div class="card-footer">
