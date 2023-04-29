@@ -11,7 +11,7 @@ use Carbon\Carbon;
 class ChatController extends Controller
 {
     public function index(){
-        $messages = Message::with('user')->orderBy('created_at','asc')->paginate(25);
+        $messages = Message::with('user')->orderBy('created_at','desc')->paginate(35);
         return view('main',compact('messages'));
     }
     public function store(MessageRequest $request){
