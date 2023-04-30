@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 class LoginTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
+    use DatabaseTransactions;
+
     public function testUserCanLoginWithCorrectData(){
         $user = User::factory()->create([
            'password'=>bcrypt($password = 'password')
