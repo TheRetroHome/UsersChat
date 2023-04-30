@@ -26,8 +26,12 @@ class AuthController extends Controller
     return redirect()->route('home')->with('success','Регистрация пройдена');
     }
     public function login(LoginRequest $request){
-        Auth::attempt($request->only('name','password'));
-        return redirect()->route('home')->with('success','Авторизация пройдена');
+        if(Auth::attempt($request->only('name','password'))){
+            return redirect()->route('home')->with('success','Авторизация пройдена');
+        }
+        else{
+            return redirect()->route('login.create')->with('error','Авторизация не была пройдена');
+        }
     }
     public function logout(){
         Auth::logout();
